@@ -26,7 +26,13 @@
       "Bash(powershell -Command \"Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/russhughes/st7789py_mpy/master/fonts/bitmap/vga2_8x16.py' -OutFile 'D:\\\\Projects\\\\ESP\\\\vga2_8x16.py'\")",
       "Bash(powershell -Command \"Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/russhughes/st7789py_mpy/master/romfonts/vga2_8x16.py' -OutFile 'D:\\\\Projects\\\\ESP\\\\vga2_8x16.py'\")",
       "Bash(mpremote connect:*)",
-      "Bash(where mpremote.exe)"
+      "Bash(where mpremote.exe)",
+      "Bash(.venv/Scripts/mpremote.exe connect:*)",
+      "Bash(where mpremote:*)",
+      "Bash(C:/Users/nicho/AppData/Local/Programs/Python/Python312/python.exe:*)",
+      "Bash(py:*)",
+      "Bash(ping -n 1 synology)",
+      "Read(//c/Users/nicho/AppData/Local/Temp/claude/D--Projects-ESP/82218a98-aa11-4b5e-bc5d-a10f91415283/tasks/**)"
     ]
   }
 }
