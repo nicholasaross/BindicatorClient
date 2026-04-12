@@ -32,7 +32,27 @@
       "Bash(C:/Users/nicho/AppData/Local/Programs/Python/Python312/python.exe:*)",
       "Bash(py:*)",
       "Bash(ping -n 1 synology)",
-      "Read(//c/Users/nicho/AppData/Local/Temp/claude/D--Projects-ESP/82218a98-aa11-4b5e-bc5d-a10f91415283/tasks/**)"
+      "Read(//c/Users/nicho/AppData/Local/Temp/claude/D--Projects-ESP/82218a98-aa11-4b5e-bc5d-a10f91415283/tasks/**)",
+      "WebFetch(domain:www.electronics-lab.com)",
+      "WebFetch(domain:micropython.org)",
+      "WebFetch(domain:wiki.heltec.org)",
+      "Bash(D:/Projects/ESP/.venv/Scripts/python.exe:*)",
+      "WebFetch(domain:wiki.lilygo.cc)",
+      "WebFetch(domain:www.cnx-software.com)",
+      "WebFetch(domain:resource.heltec.cn)",
+      "WebFetch(domain:www.amazon.co.uk)",
+      "WebFetch(domain:heltec.org)",
+      "WebFetch(domain:docs.heltec.org)",
+      "WebFetch(domain:community.home-assistant.io)",
+      "WebFetch(domain:forum.arduino.cc)",
+      "WebFetch(domain:lilygo.cc)",
+      "WebFetch(domain:meshtastic.discourse.group)",
+      "WebFetch(domain:www.ebay.com)",
+      "WebFetch(domain:elecbee.store)",
+      "Bash(python3 -c \"import sys,json; data=json.load\\(sys.stdin\\); [print\\(item['path'], item['repository']['full_name']\\) for item in data.get\\('items',[]\\)]\")",
+      "Bash(python3 -c \"import sys,json; data=json.load\\(sys.stdin\\); [print\\(item['number'], item['title'], item['html_url']\\) for item in data.get\\('items',[]\\)]\")",
+      "Bash(gh search:*)",
+      "WebFetch(domain:deepwiki.com)"
     ]
   }
 }
