@@ -4,11 +4,11 @@ A MicroPython application for the IdeaSpark ESP-WROOM-32 with integrated ST7789 
 
 ## How it works
 
-1. On boot, the ESP32 connects to WiFi
+1. On boot, the ESP32 connects to WiFi (up to 5 attempts with progress display)
 2. Makes an HTTP GET request to the Bindicator Server at `/next`
 3. Receives a JSON response indicating the next collection date and which bin types are being collected
-4. Displays a colour-coded bar for each active bin type, plus a date bar at the bottom
-5. Refreshes every hour
+4. Displays a colour-coded bar for each active bin type, plus a date and WiFi signal strength bar at the bottom
+5. Refreshes the data every hour, updating the WiFi signal indicator every 60 seconds
 
 ### Example server response
 
@@ -18,7 +18,7 @@ A MicroPython application for the IdeaSpark ESP-WROOM-32 with integrated ST7789 
 
 ### Display layout
 
-The 135x240 pixel display is divided into equally-sized horizontal regions. Only bin types present in the server response are shown, plus a date bar at the bottom. Text is centred both horizontally and vertically within each region.
+The 135x240 pixel display is divided into equally-sized horizontal regions. Only bin types present in the server response are shown, plus a status bar at the bottom. Text is centred both horizontally and vertically within each region.
 
 | Bin type             | Background colour |
 |----------------------|-------------------|
@@ -27,15 +27,26 @@ The 135x240 pixel display is divided into equally-sized horizontal regions. Only
 | Food waste           | Red               |
 | Paper and cardboard  | Blue              |
 | Garden waste         | Yellow            |
-| Date + day of week   | Black             |
+| Date + WiFi signal   | Black             |
 
 "Paper and cardboard" is split across two lines to fit the 16-character display width.
 
+The bottom status bar shows the day of week, date, and a colour-coded WiFi signal strength indicator (Strong/Good/Fair/Weak/Poor) that updates every 60 seconds.
+
+### WiFi connection
+
+On boot, a connection status screen shows:
+- Current attempt number (up to 5)
+- Connection status from the ESP32 radio (e.g. "Connecting...", "No AP found", "Wrong password")
+- Animated dot progress indicator
+
+The first attempt relies on the ESP32's auto-reconnect from stored credentials. Subsequent attempts use an explicit `wlan.connect()` call after disconnecting. Each attempt polls for up to 10 seconds, with a 5-second gap between attempts.
+
 ### Error handling
 
-- WiFi connection failure: retries every 30 seconds
+- WiFi connection failure: shows status per attempt, retries after 10 seconds (5 attempts per cycle)
 - Server unreachable or request error: displays error message, retries every 60 seconds
-- Successful fetch: refreshes after 1 hour
+- Successful fetch: refreshes data after 1 hour, RSSI every 60 seconds
 
 ## Files
 
@@ -80,6 +91,12 @@ Upload files to the ESP32 using `mpremote`:
 py -3 -m mpremote connect COM3 cp config.py :config.py
 py -3 -m mpremote connect COM3 cp bindicator.py :bindicator.py
 py -3 -m mpremote connect COM3 reset
+```
+
+To verify code runs without errors before power-cycling:
+
+```bash
+py -3 -m mpremote connect COM3 exec "import bindicator; bindicator.main()"
 ```
 
 ## Hardware
