@@ -52,7 +52,16 @@
       "Bash(python3 -c \"import sys,json; data=json.load\\(sys.stdin\\); [print\\(item['path'], item['repository']['full_name']\\) for item in data.get\\('items',[]\\)]\")",
       "Bash(python3 -c \"import sys,json; data=json.load\\(sys.stdin\\); [print\\(item['number'], item['title'], item['html_url']\\) for item in data.get\\('items',[]\\)]\")",
       "Bash(gh search:*)",
-      "WebFetch(domain:deepwiki.com)"
+      "WebFetch(domain:deepwiki.com)",
+      "WebFetch(domain:www.waveshare.com)",
+      "WebFetch(domain:spotpear.com)",
+      "WebFetch(domain:esp-cpp.github.io)",
+      "WebFetch(domain:docs.zephyrproject.org)",
+      "Bash(.venv/Scripts/python.exe -m esptool --port COM5 chip_id)",
+      "Bash(.venv/Scripts/python.exe -m esptool --port COM5 erase_flash)",
+      "Bash(.venv/Scripts/python.exe -m esptool --port COM5 --baud 460800 write_flash 0 micropython_s3.bin)",
+      "Bash(.venv/Scripts/python.exe -m mpremote connect COM5 eval \"import sys; print\\(sys.implementation, sys.platform\\)\")",
+      "Bash(ls:*)"
     ]
   }
 }
