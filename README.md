@@ -40,10 +40,10 @@ The 250x122 monochrome display shows a header with date and WiFi signal, then li
 | Bin type             | Icon              |
 |----------------------|-------------------|
 | Refuse               | Wheelie bin       |
-| Mixed recycling      | Bottle            |
+| Mixed recycling      | Recycling triangle |
 | Food waste           | Apple             |
-| Paper and cardboard  | Document          |
-| Garden waste         | Leaf              |
+| Paper and cardboard  | Isometric cardboard box |
+| Garden waste         | Tree              |
 
 The e-ink display refreshes only when data changes (no periodic RSSI updates, as each full refresh takes ~1.5 seconds).
 
