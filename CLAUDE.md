@@ -78,6 +78,7 @@ py -3 -m mpremote connect COM6 exec "import bindicator; bindicator.main()"
 - ESP32 SPI baudrate ceiling is ~26.6 MHz. The IdeaSpark uses 20 MHz; pushing higher caused crash loops. The S3 boards tolerate 40 MHz.
 - The `st7789py` driver expects a **row-major** font (one byte per row, MSB = leftmost pixel). Column-major fonts render garbled; mirrored output came from a custom 8×8 font — `vga2_8x16.py` is the known-good choice.
 - The Heltec e-ink needs `vext` powered on before SPI talks to the panel; full refresh takes ~1.5 s, which is why the e-ink path skips per-minute RSSI updates.
+- The Heltec SSD1682 sends 128 bits per gate line but the framebuffer is only 122 px tall (`HEIGHT = 122`). Source bit positions 122–127 are a panel-edge strip *outside* the framebuffer — nothing the app draws can reach them. Left at `0` they render as a black band along one long edge (appears above the top text line as mounted). `_send_buffer` in `depg0213.py` forces those padding bits to `1` (white) so the strip stays blank. Don't "fix" a stray edge band in the app/layout — it's a driver-level pad.
 - USB-C "charge-only" cables look identical to data cables but `esptool` will report "Found 0 serial ports". Try a different cable before debugging drivers.
 
 ## Conventions

@@ -137,10 +137,15 @@ class DEPG0213:
             for bx in range(16):
                 b = 0
                 for j in range(8):
-                    sp = bx * 8 + j  # source pixel
-                    if 0 <= sp < 122:
+                    sp = bx * 8 + j  # source pixel (landscape Y)
+                    if sp < 122:
                         if src[sp * stride + (lx >> 3)] & (0x80 >> (lx & 7)):
                             b |= 0x80 >> j
+                    else:
+                        # Pixels 122..127 are the panel-edge strip outside the
+                        # 122px-tall framebuffer. Force white (1) so the
+                        # controller doesn't render them as a black band.
+                        b |= 0x80 >> j
                 row[bx] = b
 
             self._data(row)
