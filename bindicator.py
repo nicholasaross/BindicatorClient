@@ -13,6 +13,7 @@ WIFI_POLL_COUNT = 20
 WIFI_RETRY_DELAY_S = 5
 WIFI_FAIL_SLEEP_S = 10
 RSSI_UPDATE_S = 60
+NO_DATA_RETRY_S = 900  # 15 min: server reachable but data empty/invalid
 
 WIFI_STATUS_TEXT = {
     1000: "Idle",
@@ -113,6 +114,16 @@ def _parse_date(date_str):
     day_name = DAYS[weekday]
     date_fmt = "{} {}".format(dy, MONTHS[mo - 1])
     return day_name, date_fmt
+
+
+def _data_ok(data):
+    """True if the server payload is renderable (non-null date + a bins collection)."""
+    if not isinstance(data, dict):
+        return False
+    if not data.get("date"):
+        return False
+    bins = data.get("bins")
+    return isinstance(bins, (list, tuple, dict))
 
 
 # --- WiFi helpers ---
@@ -222,10 +233,13 @@ def fetch_data():
         import requests
     response = requests.get(SERVER_URL)
     try:
-        data = response.json()
+        if response.status_code != 200:
+            return None
+        return response.json()
+    except (ValueError, OSError):
+        return None
     finally:
         response.close()
-    return data
 
 
 # --- TFT rendering (135x240, color) ---
@@ -397,14 +411,13 @@ def render(display, board, data):
         return render_eink(display, board, data)
 
 
-# --- Error display ---
+# --- Message / error display ---
 
-def show_error(display, board, msg):
-    fw = board["font_w"]
+def show_message(display, board, msg, color):
+    """Word-wrap and render a full-screen message in the given colour."""
     fh = board["font_h"]
     cpl = board["chars_per_line"]
     h = board["height"]
-    err_color = _color565(255, 0, 0)
 
     display.fill(BG)
     y = 4
@@ -416,9 +429,17 @@ def show_error(display, board, msg):
             if brk <= 0:
                 brk = cpl
             line, msg = msg[:brk], msg[brk:].lstrip()
-        _draw_text(display, line, 4, y, err_color, BG)
+        _draw_text(display, line, 4, y, color, BG)
         y += fh
     _flush(display)
+
+
+def show_error(display, board, msg):
+    show_message(display, board, msg, _color565(255, 0, 0))
+
+
+def show_waiting(display, board):
+    show_message(display, board, "Waiting for collection data", FG)
 
 
 # --- Main loop ---
@@ -455,6 +476,10 @@ def main():
 
         try:
             data = fetch_data()
+            if not _data_ok(data):
+                show_waiting(display, board)
+                time.sleep(NO_DATA_RETRY_S)
+                continue
             result = render(display, board, data)
 
             if board["deferred"]:
